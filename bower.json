@@ -12,5 +12,8 @@
     "mask",
     "money"
   ],
+  "dependencies": {
+    "jquery": ">= 1.9.0"
+  },  
   "license": "MIT"
 }
