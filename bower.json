@@ -1,0 +1,19 @@
+{
+  "name": "angular-maskmoney",
+  "version": "1.0.0",
+  "authors": [
+    "helderfarias <helderfarias@gmail.com>"
+  ],
+  "description": "A simple angular directive wrapper for jquery.maskMoney.js",
+  "main": "angular-maskmoney.js",
+  "keywords": [
+    "input",
+    "form",
+    "mask",
+    "money"
+  ],
+  "dependencies": {
+    "jquery-maskmoney": "3.0.2"
+  },
+  "license": "MIT"
+}
