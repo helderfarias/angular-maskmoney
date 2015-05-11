@@ -5,7 +5,7 @@
     "helderfarias <helderfarias@gmail.com>"
   ],
   "description": "A simple angular directive wrapper for jquery.maskMoney.js",
-  "main": ["angular-maskmoney.js", "jquery.maskMoney.js"],
+  "main": ["*.js"],
   "keywords": [
     "input",
     "form",
