@@ -1,11 +1,57 @@
 'use strict';
 
-angular.module('uimaskmoney', []).directive('uiMaskmoney', function($filter) {
-  return {
+angular.module('uimaskmoney', []).directive('uiMaskmoney', function($filter, $timeout) {
+
+   return {
       require: 'ngModel',
       restrict: 'A',
+      scope: {
+         ngDataPrefix: '=',
+         delay: '='
+      },
       link: function (scope, elem, attr, ngModel) {
-         elem.maskMoney();
+
+         var defaults = {
+            delay: 500
+         }
+
+         scope.$watch('ngDataPrefix', function(prefix, oldPrefix){
+            if(!prefix) return;
+            elem.maskMoney('destroy');
+            initialize();
+         });
+
+         function initialize()
+         {
+
+            attr.$set('data-prefix', scope.ngDataPrefix);
+            attr.$set('prefix', scope.ngDataPrefix);
+            elem.maskMoney();
+
+            ngModel.$parsers.push(function (viewValue) {
+               var cVal = clearValue(viewValue);
+               return parseFloat(cVal);
+            });
+
+            elem.on("blur", function () {
+               elem.val($filter('currency')(ngModel.$modelValue, currencySymbol()));
+            });
+
+            var waitBlur = null;
+            elem.on("keyup", function() {
+               if(waitBlur) $timeout.cancel(waitBlur);
+               waitBlur = $timeout(function(){
+                  elem.blur();
+                  $timeout(function(){
+                     elem.focus();
+                  });
+               }, scope.delay || defaults.delay);
+            })
+
+            ngModel.$formatters.unshift(function (value) {
+               return $filter('currency')(value, currencySymbol());
+            });
+         }
 
          function decimalRex(dChar) {
             return RegExp("\\d|\\-|\\" + dChar, 'g');
@@ -35,19 +81,6 @@ angular.module('uimaskmoney', []).directive('uiMaskmoney', function($filter) {
          function currencySymbol() {
             return attr['prefix'];
          }
-
-         ngModel.$parsers.push(function (viewValue) {
-            var cVal = clearValue(viewValue);
-            return parseFloat(cVal);
-         });
-
-         elem.on("blur", function () {
-            elem.val($filter('currency')(ngModel.$modelValue, currencySymbol()));
-         });
-
-         ngModel.$formatters.unshift(function (value) {
-            return $filter('currency')(value, currencySymbol());
-         });
       }
-  };
+   };
 });
